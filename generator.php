@@ -6,19 +6,22 @@ define( "DIR_ARTICLE", 'articles/' );
 define( "DIR_EXPORT" , 'site/' );
 define( "DIR_TEMPLATE", 'pages/' );
 
+
+    echo "Clean output directory";
+
+    rrmdir( DIR_EXPORT );
+    mkdir( DIR_EXPORT );
+
+    echo "Create categories directory\n";
+    rCreateCategoriesDir( DIR_ARTICLE );
+
     $dwoo = new Dwoo();
 
-    foreach( $categories as $category ){
-        $dir = DIR_EXPORT . $category;
-        if( !file_exists( $dir ) ){
-            echo "Render $category\n";
-            mkdir( $dir );
-        }
-    }
     //------------------------------------------------------------------------------------------------------------------
     // ARTICLES
+    echo "Start render article\n";
     foreach( $allArticles as $article ){
-        echo "Render $article[title]\n";
+        echo "\t$article[title]\n";
 
         $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
         $renderedPage = $dwoo->get( DIR_TEMPLATE . 'article.html', array(
@@ -57,4 +60,44 @@ define( "DIR_TEMPLATE", 'pages/' );
     file_put_contents( 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
 
     //------------------------------------------------------------------------------------------------------------------
+    echo "All done, ready to deploy NOW\n";
+    shell_exec( 'say TASK COMPLETE' );
     //------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Remove a directory and th crap inside
+ *
+ * @param $dir
+ */
+function rrmdir($dir) {
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+            }
+        }
+        reset($objects);
+        rmdir($dir);
+    }
+}
+
+/**
+ * Create cat folder
+ *
+ * @param $path
+ */
+function rCreateCategoriesDir( $path ){
+    $files = scandir( $path );
+    foreach( $files as $file ){
+        if( $file == '.' || $file == '..' ){
+            continue;
+        }
+        $newPath = $path . DIRECTORY_SEPARATOR . $file;
+        if( is_dir( $newPath ) ){
+            echo "\tCategory $file\n";
+            mkdir( DIR_EXPORT . $file );
+        }
+    }
+}

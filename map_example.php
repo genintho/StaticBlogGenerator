@@ -1,8 +1,4 @@
 <?php
-
-
-$categories = array();
-
 $allArticles = array(
     0 => array(
         'title' => 'Awesome Fitst article',
@@ -21,6 +17,4 @@ $allArticles = array(
         'file'  => 'crap/crappy.html',
     )
 );
-
-
 
