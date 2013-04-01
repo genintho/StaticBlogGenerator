@@ -11,12 +11,6 @@ A simple PHP based static site/blog generator
 4. HTML / CSS
 5. No mandatory external ressources
 
-## Why not Jenkyll?
-1. Jenkyll is really awesome, and so is Markdown, but I want to primarly use HTML.
-2. Too much stuff to install. This can be run on any PHP hosting, or Mac
-3. I still want to write some JS for some pages
-
-
 ## How does it work?
 1. Checkout the repository
 2. Write down the body of your post in an HTML file in /articles
@@ -37,5 +31,23 @@ The files in /pages.html contain the basic structure.
 This structure is flexible, nothing is preventing you to customize it.
 
 
+## Why not Jenkyll?
+1. Jenkyll is really awesome, and so is Markdown, but I want to primarly use HTML.
+2. Too much stuff to install. This can be run on any PHP hosting, or Mac
+3. I still want to write some JS for some pages
+
+
+## Why not Yeoman?
+Too complex. No need of compass. No coffee script ( please ! ). No support of IE / shim / feature detection.
+Keep it very simple. Just write stuf.
+
 ## Why using Dwwoo?
 Because it works. Because it is simple to use. Because I know how to use it. Because I am too lazy to create my own templating engine which will do the same exact same thing with more bug and no documentation.
+
+
+## To Do
+
+* Improve "creator mode"
+* Support of Grunt watch file
+* HTML minification
+* Push state for page switch ( useless but cool )
