@@ -57,11 +57,11 @@ define( "DIR_TEMPLATE", 'pages/' );
 
     //------------------------------------------------------------------------------------------------------------------
     // Empty
-    file_put_contents( 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
+    file_put_contents( DIR_EXPORT . 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
 
     //------------------------------------------------------------------------------------------------------------------
     echo "All done, ready to deploy NOW\n";
-    shell_exec( 'say TASK COMPLETE' );
+//    shell_exec( 'say TASK COMPLETE' );
     //------------------------------------------------------------------------------------------------------------------
 
 

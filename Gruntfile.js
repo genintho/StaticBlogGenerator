@@ -35,7 +35,7 @@ module.exports = function (grunt) {
         },
         open: {
             server: {
-                url: 'http://localhost:<%= connect.options.port %>/empty.html'
+                url: 'http://localhost:<%= connect.options.port %>/site/index.html'
             }
         }
     });
