@@ -2,15 +2,17 @@
     include( 'dwoo/dwooAutoload.php' );
     include 'map.php';
 
-define( "DIR_ARTICLE", 'articles/' );
-define( "DIR_EXPORT" , 'site/' );
-define( "DIR_TEMPLATE", 'pages/' );
+    define( "DIR_ARTICLE", 'articles/' );
+    define( "DIR_EXPORT" , 'site/' );
+    define( "DIR_TEMPLATE", 'pages/' );
 
 
     echo "Clean output directory";
 
     rrmdir( DIR_EXPORT );
     mkdir( DIR_EXPORT );
+
+    shell_exec( 'ln -s images site/images' );
 
     echo "Create categories directory\n";
     rCreateCategoriesDir( DIR_ARTICLE );
@@ -86,18 +88,23 @@ function rrmdir($dir) {
 /**
  * Create cat folder
  *
- * @param $path
+ * @param string $inPath
+ * @param string $outPath
  */
-function rCreateCategoriesDir( $path ){
-    $files = scandir( $path );
+function rCreateCategoriesDir( $inPath, $outPath = DIR_EXPORT ){
+    $files = scandir( $inPath );
     foreach( $files as $file ){
         if( $file == '.' || $file == '..' ){
             continue;
         }
-        $newPath = $path . DIRECTORY_SEPARATOR . $file;
+        $newPath = $inPath . DIRECTORY_SEPARATOR . $file;
         if( is_dir( $newPath ) ){
             echo "\tCategory $file\n";
-            mkdir( DIR_EXPORT . $file );
+            $newOutPath = $outPath . DIRECTORY_SEPARATOR . $file;
+            mkdir( $newOutPath );
+            rCreateCategoriesDir( $newPath, $newOutPath ); // recursion
         }
     }
 }
+
+

@@ -13,7 +13,7 @@ module.exports = function (grunt) {
             livereload: {
                 files: [
                     '*.html',
-                    '/images/*.{png,jpg,jpeg}'
+                    '/images/*/*.{png,jpg,jpeg}'
                 ],
                 tasks: ['livereload']
             }
