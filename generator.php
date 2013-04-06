@@ -1,110 +1,153 @@
 <?php
-    include( 'dwoo/dwooAutoload.php' );
-    include 'map.php';
+/**
+ * Blog generator.
+ *
+ * @TODO Create categories index files
+ * @TODO Sort article by date
+ */
 
-    define( "DIR_ARTICLE", 'articles/' );
-    define( "DIR_EXPORT" , 'site/' );
-    define( "DIR_TEMPLATE", 'pages/' );
+
+//    4 : array(
+//        "title" : "Why did we build our own Single Page Framewor?",
+//        "date"  : "2013-04-06",
+//        "file"  : "expensify/engineering/why_build_own_single_page_framewor.html",
+//        "similar": [3]
+//    )
+
+// load Dwoo
+include( 'dwoo/dwooAutoload.php' );
+$dwoo = new Dwoo();
+
+// load the list of all our articles
+$allArticles = json_decode( file_get_contents( 'map.json' ), true );
+//----------------------------------------------------------------------------------------------------------------------
+/**
+ * Directory storing all the articles being written
+ * @var String
+ */
+define( "DIR_ARTICLE", 'articles/' );
+
+/**
+ * Directory where to export the site
+ * @var String
+ */
+define( "DIR_EXPORT" , 'site/' );
+
+/**
+ * Directory containing all the page to build in addition to the articles
+ * @var String
+ */
+define( "DIR_TEMPLATE", 'pages/' );
 
 
-    echo "Clean output directory";
+//----------------------------------------------------------------------------------------------------------------------
+// Prepare directories
 
-    rrmdir( DIR_EXPORT );
-    mkdir( DIR_EXPORT );
+echo "Delete output directory\n";
+rrmdir( DIR_EXPORT );
 
-    shell_exec( 'ln -s images site/images' );
+echo "Recreate output directory\n";
+mkdir( DIR_EXPORT );
 
-    echo "Create categories directory\n";
-    rCreateCategoriesDir( DIR_ARTICLE );
+//@TODO find a real way to manage images
+shell_exec( 'ln -s images site/images' );
 
-    $dwoo = new Dwoo();
+echo "Create Articles Path directories\n";
+ArticlePathDirectories( DIR_ARTICLE, DIR_EXPORT );
+echo "\n";
 
-    //------------------------------------------------------------------------------------------------------------------
-    // ARTICLES
-    echo "Start render article\n";
-    foreach( $allArticles as $article ){
-        echo "\t$article[title]\n";
+//----------------------------------------------------------------------------------------------------------------------
+// ARTICLES
 
-        $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
-        $renderedPage = $dwoo->get( DIR_TEMPLATE . 'article.html', array(
-            'article' => $article,
-            'all' => $allArticles
-        ));
+echo "Start render article\n";
+foreach( $allArticles as $article ){
+    echo "\t$article[title]\n";
 
-        file_put_contents( DIR_EXPORT . $article['file'], $renderedPage);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    // Index
-    $article = $allArticles[count($allArticles)-1];
-    $previous = $allArticles[count($allArticles)-2];
     $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
-    $renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', array(
+    $renderedPage = $dwoo->get( DIR_TEMPLATE . 'article.html', array(
         'article' => $article,
-        'all' => $allArticles,
-        'previous' => $previous
+        'all' => $allArticles
     ));
-    file_put_contents( DIR_EXPORT . 'index.html', $renderedPage );
 
-    //------------------------------------------------------------------------------------------------------------------
-    // ALL
-    $renderedPage = $dwoo->get( DIR_TEMPLATE. 'all.html', array(
-        'articles' => array_reverse( $allArticles )
-    ));
-    file_put_contents( DIR_EXPORT . 'all.html', $renderedPage );
+    file_put_contents( DIR_EXPORT . $article['file'], $renderedPage);
+}
 
-    //------------------------------------------------------------------------------------------------------------------
-    // about
-    file_put_contents( DIR_EXPORT . 'about.html', $dwoo->get( DIR_TEMPLATE . 'about.html' ) );
+//----------------------------------------------------------------------------------------------------------------------
+// Index
+$article = $allArticles[count($allArticles)-1];
+$previous = $allArticles[count($allArticles)-2];
+$article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
+$renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', array(
+    'article' => $article,
+    'all' => $allArticles,
+    'previous' => $previous
+));
+file_put_contents( DIR_EXPORT . 'index.html', $renderedPage );
 
-    //------------------------------------------------------------------------------------------------------------------
-    // Empty
-    file_put_contents( DIR_EXPORT . 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
+//----------------------------------------------------------------------------------------------------------------------
+// ALL
+$renderedPage = $dwoo->get( DIR_TEMPLATE. 'all.html', array(
+    'articles' => array_reverse( $allArticles )
+));
+file_put_contents( DIR_EXPORT . 'all.html', $renderedPage );
 
-    //------------------------------------------------------------------------------------------------------------------
-    echo "All done, ready to deploy NOW\n";
+//----------------------------------------------------------------------------------------------------------------------
+// about
+file_put_contents( DIR_EXPORT . 'about.html', $dwoo->get( DIR_TEMPLATE . 'about.html' ) );
+
+//----------------------------------------------------------------------------------------------------------------------
+// Empty
+file_put_contents( DIR_EXPORT . 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
+
+//----------------------------------------------------------------------------------------------------------------------
+echo "\n\n";
+echo "All done, ready to deploy NOW\n";
 //    shell_exec( 'say TASK COMPLETE' );
-    //------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 
 /**
- * Remove a directory and th crap inside
- *
- * @param $dir
- */
+* Remove a directory and th crap inside
+*
+* @param $dir
+*/
 function rrmdir($dir) {
-    if (is_dir($dir)) {
-        $objects = scandir($dir);
-        foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
-            }
+if (is_dir($dir)) {
+    $objects = scandir($dir);
+    foreach ($objects as $object) {
+        if ($object != "." && $object != "..") {
+            if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
         }
-        reset($objects);
-        rmdir($dir);
     }
+    reset($objects);
+    rmdir($dir);
+}
 }
 
 /**
- * Create cat folder
- *
- * @param string $inPath
- * @param string $outPath
- */
-function rCreateCategoriesDir( $inPath, $outPath = DIR_EXPORT ){
-    $files = scandir( $inPath );
-    foreach( $files as $file ){
-        if( $file == '.' || $file == '..' ){
-            continue;
-        }
-        $newPath = $inPath . DIRECTORY_SEPARATOR . $file;
-        if( is_dir( $newPath ) ){
-            echo "\tCategory $file\n";
-            $newOutPath = $outPath . DIRECTORY_SEPARATOR . $file;
-            mkdir( $newOutPath );
-            rCreateCategoriesDir( $newPath, $newOutPath ); // recursion
-        }
+* Go through the articles directory to copy in the output directory the dir structure, which map the categories
+*
+* @param string $inPath
+* @param string $outPath
+*/
+function ArticlePathDirectories( $inPath, $outPath, $depth = -1 ){
+    $depth++;
+$files = scandir( $inPath );
+foreach( $files as $file ){
+    if( $file == '.' || $file == '..' ){
+        continue;
     }
+    $newPath = $inPath . DIRECTORY_SEPARATOR . $file;
+    if( is_dir( $newPath ) ){
+        for( $i=0; $i<$depth; $i++){
+            echo "\t";
+        }
+        echo "|- $file\n";
+        $newOutPath = $outPath . DIRECTORY_SEPARATOR . $file;
+        mkdir( $newOutPath );
+        ArticlePathDirectories( $newPath, $newOutPath, $depth ); // recursion
+    }
+}
 }
 
 
