@@ -4,7 +4,7 @@
         <h2>{$category}</h2>
         <ul>
             {foreach $index i}
-                <li><i>{$articles[$i].date}</i> - <a href="{$article.file}">{$articles[$i].title}</a></li>
+                <li><i>{$articles[$i].date}</i> - <a href="{$siteURL}{$articles[$i].file}">{$articles[$i].title}</a></li>
             {/foreach}
         </ul>
     {/foreach}

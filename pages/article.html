@@ -1,5 +1,8 @@
 {include pages/header.html}
 <h1>{$article.title}</h1>
+<div class="meta">
+    On {date_format $article.date} in {foreach $article.category cat}<a href="{$siteURL}{lower $cat}.html">{$cat}</a>&nbsp;&nbsp;{/foreach}
+</div>
 <!-- ARTICLE CONTENT START HERE -->
 
 {$article.content}

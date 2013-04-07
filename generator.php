@@ -6,6 +6,16 @@
  * @TODO Sort article by date
  */
 
+date_default_timezone_set( 'America/Los_Angeles' );
+define( 'PRODUCTION_URL', 'http://thomas-genin.com/' );
+
+$isProduction = $argv[1] === "prod" ? true : false;
+if( $isProduction ){
+    echo "Production Build\n";
+}
+else{
+    echo "Testing Build -- pass 'prod' to the command to build to production\n";
+}
 
 //    4 : array(
 //        "title" : "Why did we build our own Single Page Framewor?",
@@ -16,6 +26,7 @@
 
 // load Dwoo
 include( 'dwoo/dwooAutoload.php' );
+include( 'dwoo/Dwoo/Exception.php' );
 $dwoo = new Dwoo();
 
 // load the list of all our articles
@@ -66,18 +77,22 @@ echo "Create Articles Path directories\n";
 ArticlePathDirectories( DIR_ARTICLE, DIR_EXPORT );
 echo "\n";
 
+$templateVars = array(
+    'articles' => $allArticles,
+    'siteURL'    => $isProduction ? PRODUCTION_URL : 'http://localhost:9000/site/'
+);
 //----------------------------------------------------------------------------------------------------------------------
 // ARTICLES
 
 echo "Start render article\n";
 foreach( $allArticles as $key => $article ){
-    echo "\t$article[title]\n";
+    echo "\t$article[date] - $article[title]\n";
 
-    $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
-    $renderedPage = $dwoo->get( DIR_TEMPLATE . 'article.html', array(
-        'article' => $article,
-        'all' => $allArticles
-    ));
+
+    $templateVars['article'] = $article;
+    $templateVars['article']['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
+
+    $renderedPage = $dwoo->get( DIR_TEMPLATE . 'article.html', $templateVars );
 
     file_put_contents( DIR_EXPORT . $article['file'], $renderedPage);
 
@@ -91,54 +106,53 @@ foreach( $allArticles as $key => $article ){
         }
     }
 }
+$templateVars['categories'] = $mapCategories;
+unset( $templateVars['article'] );
 
 //----------------------------------------------------------------------------------------------------------------------
 // Index
 echo "Start render Index\n";
-$article = $allArticles[count($allArticles)-1];
-$previous = $allArticles[count($allArticles)-2];
-$article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
-$renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', array(
-    'article' => $article,
-    'all' => $allArticles,
-    'previous' => $previous
-));
+$templateVars['article'] = $allArticles[0];
+$templateVars['article']['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
+$templateVars['previous'] = $allArticles[1];
+
+$renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', $templateVars );
 file_put_contents( DIR_EXPORT . 'index.html', $renderedPage );
+
+unset( $templateVars['article'] );
+unset( $templateVars['previous'] );
 
 //----------------------------------------------------------------------------------------------------------------------
 // Category
+ksort( $mapCategories );
 echo "Start render categories index\n";
 foreach( $mapCategories as $category => $index ){
     echo "\t$category\n";
-//    $renderedPage = $dwoo->get( DIR_TEMPLATE. 'category.html', array(
-//        'category' => $category,
-//        'index'    => $index,
-//        'articles' => $allArticles
-//    ));
-//    file_put_contents( DIR_EXPORT . strtolower( $category ) . '.html', $renderedPage );
+    $templateVars['category'] = $category;
+    $renderedPage = $dwoo->get( DIR_TEMPLATE. 'category.html', $templateVars );
+    file_put_contents( DIR_EXPORT . strtolower( $category ) . '.html', $renderedPage );
+    unset( $templateVars['category'] );
 }
 //----------------------------------------------------------------------------------------------------------------------
 // ALL Category
-$renderedPage = $dwoo->get( DIR_TEMPLATE. '.html', array(
-    'categories'=> $mapCategories,
-    'articles' => $allArticles
-));
+echo "Start render all per category\n";
+$renderedPage = $dwoo->get( DIR_TEMPLATE. 'categories.html', $templateVars );
 file_put_contents( DIR_EXPORT . 'categories.html', $renderedPage );
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // ALL
-$renderedPage = $dwoo->get( DIR_TEMPLATE. 'all.html', array(
-    'articles' => $allArticles
-));
+echo "Start render all\n";
+$renderedPage = $dwoo->get( DIR_TEMPLATE. 'all.html', $templateVars );
 file_put_contents( DIR_EXPORT . 'all.html', $renderedPage );
 
 //----------------------------------------------------------------------------------------------------------------------
 // about
+echo "Start render about\n";
 file_put_contents( DIR_EXPORT . 'about.html', $dwoo->get( DIR_TEMPLATE . 'about.html' ) );
 
 //----------------------------------------------------------------------------------------------------------------------
 // Empty
+echo "Start render empty\n";
 file_put_contents( DIR_EXPORT . 'empty.html', $dwoo->get( DIR_TEMPLATE . 'article.html' ) );
 
 //----------------------------------------------------------------------------------------------------------------------

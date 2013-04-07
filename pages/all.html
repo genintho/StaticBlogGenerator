@@ -1,8 +1,11 @@
 {include pages/header.html}
     <h1>All the stuff I wrote</h1>
+        {foreach $categories category index}
+            <a href="{$siteURL}{lower($category)}.html">{$category}</a>&nbsp;
+        {/foreach}
         <ul>
             {foreach $articles article}
-                <li><i>{$article.date}</i> - <a href="{$article.file}">{$article.title}</a></li>
+                <li><i>{$article.date}</i> - <a href="{$siteURL}{$article.file}">{$article.title}</a></li>
             {/foreach}
         </ul>
 
