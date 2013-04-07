@@ -10,7 +10,7 @@
 //    4 : array(
 //        "title" : "Why did we build our own Single Page Framewor?",
 //        "date"  : "2013-04-06",
-//        "file"  : "expensify/engineering/why_build_own_single_page_framewor.html",
+//        "file"  : "expensify/engineering/why_build_own_single_page_framework.html",
 //        "similar": [3]
 //    )
 
@@ -20,6 +20,10 @@ $dwoo = new Dwoo();
 
 // load the list of all our articles
 $allArticles = json_decode( file_get_contents( 'map.json' ), true );
+
+// sort them by date
+usort( $allArticles, 'SortArticlesByDate' );
+
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Directory storing all the articles being written
@@ -39,6 +43,12 @@ define( "DIR_EXPORT" , 'site/' );
  */
 define( "DIR_TEMPLATE", 'pages/' );
 
+/**
+ * Store all the categroy for articles
+ *
+ * @var Array
+ */
+$mapCategories = array();
 
 //----------------------------------------------------------------------------------------------------------------------
 // Prepare directories
@@ -60,7 +70,7 @@ echo "\n";
 // ARTICLES
 
 echo "Start render article\n";
-foreach( $allArticles as $article ){
+foreach( $allArticles as $key => $article ){
     echo "\t$article[title]\n";
 
     $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
@@ -70,10 +80,21 @@ foreach( $allArticles as $article ){
     ));
 
     file_put_contents( DIR_EXPORT . $article['file'], $renderedPage);
+
+    if( isset( $article['category'] ) ){
+        foreach( $article['category'] as $category ){
+            $category = ucwords( strtolower($category) );
+            if( !isset( $mapCategories[$category]) ){
+                $mapCategories[$category] = array();
+            }
+            array_push( $mapCategories[$category], $key );
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 // Index
+echo "Start render Index\n";
 $article = $allArticles[count($allArticles)-1];
 $previous = $allArticles[count($allArticles)-2];
 $article['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
@@ -85,9 +106,30 @@ $renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', array(
 file_put_contents( DIR_EXPORT . 'index.html', $renderedPage );
 
 //----------------------------------------------------------------------------------------------------------------------
+// Category
+echo "Start render categories index\n";
+foreach( $mapCategories as $category => $index ){
+    echo "\t$category\n";
+//    $renderedPage = $dwoo->get( DIR_TEMPLATE. 'category.html', array(
+//        'category' => $category,
+//        'index'    => $index,
+//        'articles' => $allArticles
+//    ));
+//    file_put_contents( DIR_EXPORT . strtolower( $category ) . '.html', $renderedPage );
+}
+//----------------------------------------------------------------------------------------------------------------------
+// ALL Category
+$renderedPage = $dwoo->get( DIR_TEMPLATE. '.html', array(
+    'categories'=> $mapCategories,
+    'articles' => $allArticles
+));
+file_put_contents( DIR_EXPORT . 'categories.html', $renderedPage );
+
+
+//----------------------------------------------------------------------------------------------------------------------
 // ALL
 $renderedPage = $dwoo->get( DIR_TEMPLATE. 'all.html', array(
-    'articles' => array_reverse( $allArticles )
+    'articles' => $allArticles
 ));
 file_put_contents( DIR_EXPORT . 'all.html', $renderedPage );
 
@@ -125,29 +167,40 @@ if (is_dir($dir)) {
 }
 
 /**
-* Go through the articles directory to copy in the output directory the dir structure, which map the categories
-*
-* @param string $inPath
-* @param string $outPath
-*/
+ * Go through the articles directory to copy in the output directory the dir structure, which map the categories
+ *
+ * @param string $inPath
+ * @param string $outPath
+ * @param        $depth
+ */
 function ArticlePathDirectories( $inPath, $outPath, $depth = -1 ){
     $depth++;
-$files = scandir( $inPath );
-foreach( $files as $file ){
-    if( $file == '.' || $file == '..' ){
-        continue;
-    }
-    $newPath = $inPath . DIRECTORY_SEPARATOR . $file;
-    if( is_dir( $newPath ) ){
-        for( $i=0; $i<$depth; $i++){
-            echo "\t";
+    $files = scandir( $inPath );
+    foreach( $files as $file ){
+        if( $file == '.' || $file == '..' ){
+            continue;
         }
-        echo "|- $file\n";
-        $newOutPath = $outPath . DIRECTORY_SEPARATOR . $file;
-        mkdir( $newOutPath );
-        ArticlePathDirectories( $newPath, $newOutPath, $depth ); // recursion
+        $newPath = $inPath . DIRECTORY_SEPARATOR . $file;
+        if( is_dir( $newPath ) ){
+            for( $i=0; $i<$depth; $i++){
+                echo "\t";
+            }
+            echo "|- $file\n";
+            $newOutPath = $outPath . DIRECTORY_SEPARATOR . $file;
+            mkdir( $newOutPath );
+            ArticlePathDirectories( $newPath, $newOutPath, $depth ); // recursion
+        }
     }
-}
 }
 
+/**
+ * Sort callback used to sort the articles by date
+ *
+ * @param $a
+ * @param $b
+ * @return Boolean
+ */
+function SortArticlesByDate( $a, $b ){
+    return $a['data'] > $b['date'];
+}
 

@@ -1,0 +1,24 @@
+{include pages/header.html}
+<h1>{$article.title}</h1>
+<!-- ARTICLE CONTENT START HERE -->
+
+{$article.content}
+
+<!-- ARTICLE CONTENT STOP HERE -->
+<div>
+    {if $previous}
+        <h3>Previously</h3>
+        <i><a href="{$previous.file}">{$previous.title}</a></i>
+    {/if}
+    {if $article.similar}
+    <h3>You might also like</h3>
+    <ul>
+        {foreach $article.similar keySimilar}
+            <ol><a href="">{$all[$keySimilar].title}</a></ol>
+        {/foreach}
+    </ul>
+    {/if}
+
+</div>
+
+{include pages/footer.html}

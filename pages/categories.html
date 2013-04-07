@@ -1,0 +1,13 @@
+{include pages/header.html}
+    <h1>All the stuff I wrote</h1>
+    {foreach $categories category index}
+        <h2>{$category}</h2>
+        <ul>
+            {foreach $index i}
+                <li><i>{$articles[$i].date}</i> - <a href="{$article.file}">{$articles[$i].title}</a></li>
+            {/foreach}
+        </ul>
+    {/foreach}
+
+
+{include pages/footer.html}
