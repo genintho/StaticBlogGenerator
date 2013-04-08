@@ -2,6 +2,9 @@
 <html>
 <head>
     <title>Thomas Genin</title>
+    {if $article}
+        <link rel="canonical" href="{$siteURL}{$article.file}" />
+    {/if}
     <style>
         body{
             font-family: Avenir, HelveticaNeue, Helvetica, Arial;
