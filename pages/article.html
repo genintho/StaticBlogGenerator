@@ -3,6 +3,7 @@
 <div class="meta">
     On {date_format $article.date} in {foreach $article.category cat}<a href="{$siteURL}{lower $cat}.html">{$cat}</a>&nbsp;&nbsp;{/foreach}
 </div>
+<br/>
 <!-- ARTICLE CONTENT START HERE -->
 
 {$article.content}

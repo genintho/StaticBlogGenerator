@@ -21,6 +21,12 @@
         "date"  : "2013-04-02",
         "category": ["Engineering", "Expensify"],
         "file"  : "expensify/engineering/single_page.html"
+    },
+    "4":{
+        "title" : "Half day in the office",
+        "date"  : "2013-04-07",
+        "category": ["Expensify", "Photo"],
+        "file"  : "photo/half_day_in_office.html"
     }
 
 }
