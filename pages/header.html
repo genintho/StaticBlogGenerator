@@ -28,7 +28,7 @@
             display: inline;
         }
 
-        #about{
+        #about-link {
             float: right;
         }
 
@@ -62,19 +62,41 @@
         }
 
         footer{
+            border-top: black solid 1px;
             width: 800px;
-            margin: 20px auto auto;
+            margin: 30px auto auto;
         }
 
         footer div{
-            border-top: black solid 1px;
-            padding-top: 10px;
-            padding-left: 10px;
+            margin-top: 20px;
+            margin-left: 20px;
         }
 
         .meta{
             font-size: 16px;
             font-style: italic;
+        }
+
+        .about-header{
+            margin: 65px;
+        }
+
+        .about-header-avatar{
+            float: left;
+        }
+        .about-header-text{
+            font-size: 45px;
+            margin-left: 165px;
+            padding-top: 12px;
+        }
+
+        .about-section{
+            font-size: 25px;
+            text-align: center;
+        }
+
+        #about hr{
+            margin: 55px;
         }
     </style>
 </head>
@@ -82,7 +104,7 @@
 <header>
     <h1><a href="{$siteURL}">Thomas Genin</a></h1>
     <h2>Photography, Large scale Web App</h2>
-    <a id="about" href="{$siteURL}about.html">About</a>
+    <a id="about-link" href="{$siteURL}about.html">About</a>
 </header>
 <article>
 

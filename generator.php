@@ -113,7 +113,7 @@ unset( $templateVars['article'] );
 // Index
 echo "Start render Index\n";
 $templateVars['article'] = $allArticles[0];
-$templateVars['article']['content'] = file_get_contents( DIR_ARTICLE . $article['file'] );
+$templateVars['article']['content'] = file_get_contents( DIR_ARTICLE . $allArticles[0]['file'] );
 $templateVars['previous'] = $allArticles[1];
 
 $renderedPage = $dwoo->get( DIR_TEMPLATE . 'index.html', $templateVars );
