@@ -3,4 +3,5 @@ node_modules/*
 .idea/*
 site/*
 images/*
+dwoo/compiled/*
 dwoo/*
