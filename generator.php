@@ -111,7 +111,7 @@ unset( $templateVars['article'] );
 
 //----------------------------------------------------------------------------------------------------------------------
 // Index
-echo "Start render Index\n";
+echo "Start render Index '{$allArticles[0]['title']}' \n";
 $templateVars['article'] = $allArticles[0];
 $templateVars['article']['content'] = file_get_contents( DIR_ARTICLE . $allArticles[0]['file'] );
 $templateVars['previous'] = $allArticles[1];
@@ -215,6 +215,6 @@ function ArticlePathDirectories( $inPath, $outPath, $depth = -1 ){
  * @return Boolean
  */
 function SortArticlesByDate( $a, $b ){
-    return $a['data'] > $b['date'];
+    return strtotime($a['date']) < strtotime( $b['date'] );
 }
 
