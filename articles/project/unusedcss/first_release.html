@@ -1,0 +1,26 @@
+
+<p>
+    I just released my first public Chrome Extension: unusedCSS.
+    You can download it on the <a href=https://chrome.google.com/webstore/detail/unusedcss/dokggbghedajooenkgjbamikfgnngeik>Chrome WebStore</a>.
+<p>
+    This extension is a developper tools aiming at improving the detection of 
+    unused CSS rules in JavaScript heavy WebApp.
+</p>
+<p>
+    I know that tools doing that are already existing. But these tools are not
+    targeting the same kind of site. They target content website where the page
+    is generated on the server and the user is navigating from page to page.
+</p>
+<p>
+    But in the case of WebApp, the user can use a single page application, with no navigation and with the page being construct by JavaScript.
+    In this case, these tools, which are doing a static inspection are useless.
+</p>
+<p>
+    This extension is reaction to navigation event and DOM modification event and is trying to react to these event to update the list of used selector.
+</p>
+<p>
+    It is working quite well, with good performance, but some love needs to be apply: I need a logo, improve the results, try to do a crawling option, move the tool in the developer tools, etc
+</p>
+<p>
+    The source are available on <a href=https://github.com/genintho/unusedCSS>Github</a>, let me know if you have ideas to improve it, or found a bug.
+</p>
