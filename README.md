@@ -51,3 +51,6 @@ Because it works. Because it is simple to use. Because I know how to use it. Bec
 * HTML minification
 * Push state for page switch ( useless but cool )
 * Improve grunt operation to generate stuff from grunt
+* Generate RSS feed
+* Generate Sitemap
+
