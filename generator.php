@@ -27,7 +27,7 @@ else{
 // load Dwoo
 include( 'dwoo/dwooAutoload.php' );
 include( 'dwoo/Dwoo/Exception.php' );
-$dwoo = new Dwoo();
+$dwoo = new Dwoo( '/tmp', '/tmp' );
 
 // load the list of all our articles
 $allArticles = json_decode( file_get_contents( 'map.json' ), true );
