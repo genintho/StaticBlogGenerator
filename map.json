@@ -33,8 +33,13 @@
         "date" : "2013-04-23",
         "category": ["Project", "unusedCSS"],
         "file": "project/unusedcss/first_release.html"
+    },
+    "6":{
+        "title": "Expensify offshore 2013: Croatia",
+        "date": "2013-09-29",
+        "category": ["Expensify"],
+        "file": "expensify/offshore/2013/croatia.html"
     }
-
 }
 
 
