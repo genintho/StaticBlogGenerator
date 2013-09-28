@@ -5,3 +5,7 @@ site/*
 images/*
 dwoo/compiled/*
 dwoo/*
+
+*.sublime-workspace
+
+*.sublime-project
