@@ -39,6 +39,12 @@
         "date": "2013-09-29",
         "category": ["Expensify", "Photo"],
         "file": "expensify/offshore/2013/croatia.html"
+    },
+    "7":{
+        "title": "Chrome Developer tools log color are based on the variable type",
+        "date": "2013-10-12",
+        "category": ["JavaScript", "Developer tools"],
+        "file": "javascript/developer_tool_color.html"
     }
 }
 
