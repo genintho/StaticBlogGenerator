@@ -4,11 +4,13 @@
     On {date_format $article.date} in {foreach $article.category cat}<a href="{$siteURL}{lower $cat}.html">{$cat}</a>&nbsp;&nbsp;{/foreach}
 </div>
 <br/>
+<div class="article">
 <!-- ARTICLE CONTENT START HERE -->
 
 {$article.content}
 
 <!-- ARTICLE CONTENT STOP HERE -->
+</div>
 <div>
     {if $previous}
         <h3>Previously</h3>
