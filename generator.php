@@ -157,6 +157,13 @@ file_put_contents( DIR_EXPORT . 'empty.html', $dwoo->get( DIR_TEMPLATE . 'articl
 
 //----------------------------------------------------------------------------------------------------------------------
 echo "\n\n";
+if( $isProduction ){
+    echo "Production Build\n";
+}
+else{
+    echo "Testing Build -- pass 'prod' to the command to build to production\n";
+}
+
 echo "All done, ready to deploy NOW\n";
 //    shell_exec( 'say TASK COMPLETE' );
 //----------------------------------------------------------------------------------------------------------------------
