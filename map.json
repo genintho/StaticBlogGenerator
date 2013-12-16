@@ -51,6 +51,12 @@
         "date": "2013-11-03",
         "category": ["Expensify"],
         "file": "expensify/offshore/2012/video.html"
+    },
+    "9":{
+        "title": "Nested templates in Golang",
+        "date": "2013-12-15",
+        "category": ["Golang"],
+        "file": "golang/nested-template.html"
     }
 }
 
